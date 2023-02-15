@@ -2,7 +2,8 @@
 ## Architecture
 
 The architecture of RKE2 is split into Servers and Agents , where Servers represent the master nodes and Agents represent the worker nodes .
-[Image]
+
+![App Screenshot](https://docs.rke2.io/assets/images/overview-783b5a0a7e319dc96a2db8473dc83f3d.png)
 
 ## Requirements
 There are 2 main scripts that we need to install the cluster , RKE2 server script which we are going to run on the nodes we want to assign as masters , and RKE2 agent script on nodes assigned to be workers
@@ -184,6 +185,18 @@ sudo systemctl restart rke2-agent
 Rancher Installation is straight forward using their [Documentation](https://ranchermanager.docs.rancher.com/v2.6/pages-for-subheaders/install-upgrade-on-a-kubernetes-cluster)
 
 it's installed using helm 
+### Note
+you can add a domain name for you loadbalancer in your /etc/hosts file if you aren't going to create a dns record on the internet
+```bash
+echo <Load-balancer-ip> <your-desired-domain-name> >> /etc/hosts
+```
+then use that domain name in this command 
+```bash
+helm install rancher rancher-stable/rancher \
+  --namespace cattle-system \
+  --set hostname=<LOAD_BALANCER_DomainName> \
+  --set bootstrapPassword=admin
+```
 
 ---
 # Using Nginx as Proxy/Loadbalancer for Rancher UI & Kubectl 
@@ -193,10 +206,35 @@ after creating the vm and ssh into it :
 ```bash 
 sudo apt install nginx
 ```
+### Loadbalancer config for kubectl commands :
+```bash
+mkdir -p /etc/nginx/tcpconf.d
+```
+
+```bash 
+nano k8s.conf
+```
+
+copy this into the file 
+```bash
+upstream kubernetes {
+server 192.168.0.7:6443;
+server 192.168.0.8:6443;
+server 192.168.0.10:6443;
+}
+
+
+server {
+listen 6443;
+proxy_pass kubernetes;
+}
+```
+
 
 ### load balancer for rancher ui config :
 add this to /etc/nginx/nginx.conf 
 ```bash
+load_module /usr/lib/nginx/modules/ngx_stream_module.so;
 worker_processes 4;
 worker_rlimit_nofile 40000;
 
@@ -226,5 +264,9 @@ stream {
       listen     443;
       proxy_pass rancher_servers_https;
   }
-
+  include /etc/nginx/tcpconf.d/*;
 }
+```
+
+### Now we have HA 5 nodes cluster with loadbalancing enabled for kuebetl commands and rancher UI panel
+
