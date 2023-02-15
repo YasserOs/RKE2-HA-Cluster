@@ -120,58 +120,83 @@ echo "server: https://<ip-1st-masterr-node>:9345" > /etc/rancher/rke2/config.yam
 ```bash
 echo "token: <copied-token>" >> /etc/rancher/rke2/config.yaml
 ```
+
+```bash nano /etc/rancher/rke2/config```
+
+add this option too in the file
+```bash
 tls-san:
   - "20.4.3.208"  
-
+```
 save and exit file
-
+```bash
 systemctl enable rke2-server.service 
 systemctl start rke2-server.service
+```
+## Now we finished installing the 3 server nodes as masters , we will continue with the workers ( agents )
+---
+### Worker Node 1 & 2 
 
-now we created our 3 master nodes , we need to ssh into the 2 worker nodes and do a very similar installation 
-============
 ssh into worker 1 & 2 :
 
 Download and install the rke2-agent script
+```bash
 curl -sfL https://get.rke2.io | INSTALL_RKE2_TYPE=agent sh -  
-
+```
+```bash
 sudo mkdir -p /etc/rancher/rke2/ 
-
-# change the ip to reflect your rancher1 ip
+```
+### change the ip to reflect your 1st master node ip or any of the other masters ips
 echo "server: https://<ip-1st-maser-node>:9345" > /etc/rancher/rke2/config.yaml
 
-# change the Token to the one from rancher1 /var/lib/rancher/rke2/server/node-token 
-echo "token: $TOKEN" >> /etc/rancher/rke2/config.yaml
+### change the Token to the one from the 1st master node /var/lib/rancher/rke2/server/node-token 
+echo "token:<master-token> >> /etc/rancher/rke2/config.yaml
 
-# enable and start
+### enable and start agent
 systemctl enable rke2-agent.service
 systemctl start rke2-agent.service
 
 now we successfully installed a HA 5 nodes cluser and we can check the results by running kubectl get nodes on any machine with the kubeconfig file we copied earlier from /etc/rancher/rke2/rke2.yaml on any of the master nodes and changing the server ip to the loadbalancer ip
 
 
-============================
+---
+## Cluster Upgrade or Downgrade 
 
-Install a specific version :
+we can downgrade or upgrade the cluster in a very easy and straiht forward manner , it's done by downloading and installing a specific rke2 cluster version from the [releases](https://github.com/rancher/rke2/releases) page , on every node of the cluster and restarting the service on the nodes one by one ( 1 master at a time , then 1 agent at a time ) 
+
+Example we want our cluster version to be 1.24.10
+```bash
 curl -sfL https://get.rke2.io | sudo INSTALL_RKE2_VERSION=v1.24.10+rke2r1 sh -
+```
+we will restart the service on our server (master) nodes one by one
+
 Server:
 sudo systemctl restart rke2-server
 
+then the agents one by one
 Agent:
 sudo systemctl restart rke2-agent
 
-=================================
+### after all nodes services have been restarted the cluster will be ready with the required version
+---
+# Installing Rancher UI on the cluster
 
-Install rancher UI :
-helm install rancher rancher-stable/rancher \
-  --namespace cattle-system \
-  --set hostname=<LOAD_BALANCER_DomainName> \
-  --set bootstrapPassword=admin
+Rancher Installation is straight forward using their [Documentation](https://ranchermanager.docs.rancher.com/v2.6/pages-for-subheaders/install-upgrade-on-a-kubernetes-cluster)
 
-===============================
-load balancer for rancher ui config :
+it's installed using helm 
+
+---
+# Using Nginx as Proxy/Loadbalancer for Rancher UI & Kubectl 
+we need to provision a linux virtual machine with a public ip and instll nginx on it and configure it as a loadbalancer for both kubectl commands & the rancher UI 
+
+after creating the vm and ssh into it :
+```bash 
+sudo apt install nginx
+```
+
+### load balancer for rancher ui config :
 add this to /etc/nginx/nginx.conf 
-
+```bash
 worker_processes 4;
 worker_rlimit_nofile 40000;
 
@@ -182,11 +207,10 @@ events {
 stream {
   upstream rancher_servers_http {
       least_conn;
-      server 192.168.0.4:80 max_fails=3 fail_timeout=5s;
-      server 192.168.0.9:80 max_fails=3 fail_timeout=5s;
-      server 192.168.0.10:80 max_fails=3 fail_timeout=5s;
-      server 192.168.0.7:80 max_fails=3 fail_timeout=5s;
-      server 192.168.0.8:80 max_fails=3 fail_timeout=5s;
+      server <ip-of node where rancher is deployed on>:80 max_fails=3 fail_timeout=5s;
+      server <ip-of node where rancher is deployed on>:80 max_fails=3 fail_timeout=5s;
+      server <ip-of node where rancher is deployed on>:80 max_fails=3 fail_timeout=5s;
+
   }
   server {
       listen 80;
@@ -195,12 +219,9 @@ stream {
 
   upstream rancher_servers_https {
       least_conn;
-      server 192.168.0.4:443 max_fails=3 fail_timeout=5s;
-      server 192.168.0.9:443 max_fails=3 fail_timeout=5s;
-      server 192.168.0.10:443 max_fails=3 fail_timeout=5s;
-      server 192.168.0.7:443 max_fails=3 fail_timeout=5s;
-      server 192.168.0.8:443 max_fails=3 fail_timeout=5s;
-  }
+      server <ip-of node where rancher is deployed on>:443 max_fails=3 fail_timeout=5s;
+      server <ip-of node where rancher is deployed on>:443 max_fails=3 fail_timeout=5s;
+      server <ip-of node where rancher is deployed on>:443 max_fails=3 fail_timeout=5s;
   server {
       listen     443;
       proxy_pass rancher_servers_https;
