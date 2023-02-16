@@ -47,7 +47,7 @@ curl -sfL https://get.rke2.io | INSTALL_RKE2_TYPE=server sh -
 mkdir -p /etc/rancher/rke2
 ```
 
-rke2 (agent and server ) scripts can be configured through 2 ways , CLO flags and config files , we are going to take the 2nd approach and create a simple minimal config file in the default location that rke2 looks for ( we can provide a different file path through the cli flags )
+rke2 (agent and server ) scripts can be configured through 2 ways , CLI flags and config files , we are going to take the 2nd approach and create a simple minimal config file in the default location that rke2 looks for ( we can provide a different file path through the cli flags )
 
 ``` bash
 touch /etc/rancher/rke/config.yaml 
@@ -56,13 +56,15 @@ There are many options that can be configured for the server , you can refer to 
 
 The most important options that we are going to use are :
 - server 
-This is the ip of the server that all the other nodes will need to join the cluster , it can be the ip of any master node we created or a load balancer that sits in front of the master nodes 
+    This is the ip of the server that all the other nodes will need to join the cluster , it can be the ip of any master node we created or a load balancer that sits in front of the master nodes 
 
 - token 
-This is the token that the cluster nodes will use to join the cluster , generated from initializing the 1st master node or we can provide our token 
+    This is the token that the cluster nodes will use to join the cluster , generated from initializing the 1st master node or we can provide our token 
 
 - tls-san:
     - "xxx.xxx.xxx.xxx"
+<img width="654" alt="config-file" src="https://user-images.githubusercontent.com/95745669/219386918-333ed689-3481-4407-a0aa-9ed878bc6b7c.png">
+
 
 This option is used to include any ips/domain names in the server certificates of the api-servers of the master nodes , needed if we are going to use a load balancer to access the cluster's multiple api-servers (this loadbalancer ip is used in the kubeconfig file that kubectl uses to communicate with the cluster )
 
