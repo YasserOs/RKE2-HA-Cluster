@@ -63,7 +63,7 @@ The most important options that we are going to use are :
     - "xxx.xxx.xxx.xxx"
 \n This option is used to include any ips/domain names in the server certificates of the api-servers of the master nodes , needed if we are going to use a load balancer to access the cluster's multiple api-servers (this loadbalancer ip is used in the kubeconfig file that kubectl uses to communicate with the cluster )
 
-<img height= 100 width="750" alt="config-file" src="https://user-images.githubusercontent.com/95745669/219386918-333ed689-3481-4407-a0aa-9ed878bc6b7c.png">
+
 
 ---
 ### Note
@@ -96,6 +96,7 @@ now the server will pull the rke2 runtime image and will extracts the binaries f
 ```bash
 cat /var/lib/rancher/rke2/server/node-token
 ```
+<img height=100 width="611" alt="token" src="https://user-images.githubusercontent.com/95745669/219389738-e523b8df-b372-40bc-a67c-34ec985dd6ee.png">
 
 copy the token we will use it in the config file of other nodes joining the cluster
 
@@ -131,6 +132,8 @@ add this option too in the file
 tls-san:
   - "20.4.3.208"  
 ```
+<img height= 100 width="750" alt="config-file" src="https://user-images.githubusercontent.com/95745669/219386918-333ed689-3481-4407-a0aa-9ed878bc6b7c.png">
+
 save and exit file
 ```bash
 systemctl enable rke2-server.service 
@@ -154,6 +157,7 @@ echo "server: https://<ip-1st-maser-node>:9345" > /etc/rancher/rke2/config.yaml
 
 ### change the Token to the one from the 1st master node /var/lib/rancher/rke2/server/node-token 
 echo "token:<master-token> >> /etc/rancher/rke2/config.yaml
+<img height=100 width="637" alt="agent-config" src="https://user-images.githubusercontent.com/95745669/219389907-fb3fbd26-34ce-41cd-bbaa-e12426f6e57f.png">
 
 ### enable and start agent
 systemctl enable rke2-agent.service
