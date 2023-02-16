@@ -63,7 +63,7 @@ The most important options that we are going to use are :
 
 - tls-san:
     - "xxx.xxx.xxx.xxx"
-<img width="654" alt="config-file" src="https://user-images.githubusercontent.com/95745669/219386918-333ed689-3481-4407-a0aa-9ed878bc6b7c.png">
+<img height= 200 width="669" alt="config-file" src="https://user-images.githubusercontent.com/95745669/219386918-333ed689-3481-4407-a0aa-9ed878bc6b7c.png">
 
 
 This option is used to include any ips/domain names in the server certificates of the api-servers of the master nodes , needed if we are going to use a load balancer to access the cluster's multiple api-servers (this loadbalancer ip is used in the kubeconfig file that kubectl uses to communicate with the cluster )
