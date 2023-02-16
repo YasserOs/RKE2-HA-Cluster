@@ -55,18 +55,15 @@ touch /etc/rancher/rke/config.yaml
 There are many options that can be configured for the server , you can refer to the rke2 documentation for the server config options https://docs.rke2.io/reference/server_config
 
 The most important options that we are going to use are :
-- server 
-    This is the ip of the server that all the other nodes will need to join the cluster , it can be the ip of any master node we created or a load balancer that sits in front of the master nodes 
+- server : This is the ip of the server that all the other nodes will need to join the cluster , it can be the ip of any master node we created or a load balancer that sits in front of the master nodes 
 
-- token 
-    This is the token that the cluster nodes will use to join the cluster , generated from initializing the 1st master node or we can provide our token 
+- token : This is the token that the cluster nodes will use to join the cluster , generated from initializing the 1st master node or we can provide our token 
 
 - tls-san:
     - "xxx.xxx.xxx.xxx"
-<img height= 100 width="750" alt="config-file" src="https://user-images.githubusercontent.com/95745669/219386918-333ed689-3481-4407-a0aa-9ed878bc6b7c.png">
-
-
 This option is used to include any ips/domain names in the server certificates of the api-servers of the master nodes , needed if we are going to use a load balancer to access the cluster's multiple api-servers (this loadbalancer ip is used in the kubeconfig file that kubectl uses to communicate with the cluster )
+
+<img height= 100 width="750" alt="config-file" src="https://user-images.githubusercontent.com/95745669/219386918-333ed689-3481-4407-a0aa-9ed878bc6b7c.png">
 
 ---
 ### Note
