@@ -161,9 +161,12 @@ echo "token:<master-token> >> /etc/rancher/rke2/config.yaml
 <img height=100 width="637" alt="agent-config" src="https://user-images.githubusercontent.com/95745669/219389907-fb3fbd26-34ce-41cd-bbaa-e12426f6e57f.png">
 
 ### enable and start agent
+    
+```bash
 systemctl enable rke2-agent.service
 systemctl start rke2-agent.service
-
+```
+    
 now we successfully installed a HA 5 nodes cluser and we can check the results by running kubectl get nodes on any machine with the kubeconfig file we copied earlier from /etc/rancher/rke2/rke2.yaml on any of the master nodes and changing the server ip to the loadbalancer ip
 
 
