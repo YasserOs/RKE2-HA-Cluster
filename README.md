@@ -157,6 +157,7 @@ echo "server: https://<ip-1st-maser-node>:9345" > /etc/rancher/rke2/config.yaml
 
 ### change the Token to the one from the 1st master node /var/lib/rancher/rke2/server/node-token 
 echo "token:<master-token> >> /etc/rancher/rke2/config.yaml
+    
 <img height=100 width="637" alt="agent-config" src="https://user-images.githubusercontent.com/95745669/219389907-fb3fbd26-34ce-41cd-bbaa-e12426f6e57f.png">
 
 ### enable and start agent
