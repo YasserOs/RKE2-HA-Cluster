@@ -1,4 +1,12 @@
 # HA k8s cluster with RKE2
+## Introduction
+RKE2, also known as RKE Government, is Rancher's next-generation Kubernetes distribution.
+It is a fully conformant Kubernetes distribution that focuses on security and compliance within the U.S. Federal Government sector.
+
+### How is it different from RKE
+- RKE2 does not rely on Docker as RKE1 does. RKE1 leveraged Docker for deploying and managing the control plane components (they are deployed as containers not pods and managed by docker ) as well as the container runtime for Kubernetes. RKE2 launches control plane components as static pods, managed by the kubelet. The embedded container runtime is containerd.
+- RKE2 was formerly known as RKE Government because was originally designed to be deployed in US government projects. As you can imagine, security is of utmost importance in these scenarios, so RKE2 focuses on security and compliance out of the box , while RKE is a standard Kubernetes distribution without the focus on security.
+- 
 ## Architecture
 
 The architecture of RKE2 is split into Servers and Agents , where Servers represent the master nodes and Agents represent the worker nodes .
