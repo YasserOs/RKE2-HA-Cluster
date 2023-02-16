@@ -182,12 +182,14 @@ curl -sfL https://get.rke2.io | sudo INSTALL_RKE2_VERSION=v1.24.10+rke2r1 sh -
 we will restart the service on our server (master) nodes one by one
 
 Server:
+```bash
 sudo systemctl restart rke2-server
-
+```
 then the agents one by one
 Agent:
+```bash
 sudo systemctl restart rke2-agent
-
+```
 ### after all nodes services have been restarted the cluster will be ready with the required version
 ---
 # Installing Rancher UI on the cluster
@@ -239,10 +241,11 @@ listen 6443;
 proxy_pass kubernetes;
 }
 ```
+<img width="576" alt="k8s" src="https://user-images.githubusercontent.com/95745669/219393176-83a7975a-0e02-4ccf-a2ef-de07e2c163db.png">
 
 
 ### load balancer for rancher ui config :
-add this to /etc/nginx/nginx.conf 
+write this to /etc/nginx/nginx.conf 
 ```bash
 load_module /usr/lib/nginx/modules/ngx_stream_module.so;
 worker_processes 4;
@@ -277,6 +280,8 @@ stream {
   include /etc/nginx/tcpconf.d/*;
 }
 ```
+
+<img width="838" alt="nginx" src="https://user-images.githubusercontent.com/95745669/219392832-05555819-fd5f-450c-93dd-8914fa7504ef.png">
 
 ### Now we have HA 5 nodes cluster with loadbalancing enabled for kuebetl commands and rancher UI panel
 
