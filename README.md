@@ -77,6 +77,9 @@ nano /etc/rancher/rke2/config.yaml
 tls-san:
     - "20.4.3.208"  
 ```
+<img heught=100 width="500" alt="tls-san" src="https://user-images.githubusercontent.com/95745669/219389155-fa8d44fb-bce8-4141-a86b-cfa0a623d5ba.png">
+
+
 save file and exit
 
 ### Start and enable the server for restarts - 
